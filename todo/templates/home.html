@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>To-Do Checklist</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+</head>
+<body>
+    <nav class="navbar is-light" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="https://bulma.io">
+            <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            <a class="navbar-item" href="/">
+                Home
+            </a>
+        </div>
+
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="field has-addons">
+                        <div class="control">
+                            <input name="task" class="input" type="text" placeholder="Add Todo">
+                        </div>
+                        <div class="control">
+                            <button type="submit" class="button is-link">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="section">
+        <div class="container">
+            <h1 class="title">
+                To-Do Checklist
+            </h1>
+            {% if messages %}
+                {% for message in messages %}
+                    <article class="message is-success">
+                        <div class="message-header">
+                            <p>Success!</p>
+                        </div>
+                        <div class="message-body">
+                            {{ message }}
+                        </div>
+                    </article>
+                {% endfor %}
+            {% endif %}
+            <table class="table is-hoverable is-fullwidth">
+            <thead>
+            <tr>
+                <th>Task</th>
+                <th>Created At</th>
+                <th>Completed</th>
+                <th>Completed By</th>
+                <th>Delete</th>
+            </tr>
+            </thead>
+            {% for todo in todos %}
+                <tr>
+                    <td>
+                        {% if todo.completed == True %}
+                            <span style="text-decoration: line-through">{{ todo.task }}</span>
+                        {% else %}
+                            {{ todo.task }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ todo.creation_date }}
+                    </td>
+                    <td>
+                        {% if todo.completed == True %}
+                            <i class="far fa-check-circle"></i>
+                            <a href="mark_incomplete/{{ todo.id }}/">Mark Incomplete</a>
+                        {% else %}
+                            <i class="far fa-circle"></i>
+                            <a href="mark_complete/{{ todo.id }}/">Mark Complete</a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ todo.completion_date }}
+                    </td>
+                    <td>
+                        <a href="delete/{{ todo.id }}/">Remove Task</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        </div>
+    </section>
+</body>
+</html>
+
+
